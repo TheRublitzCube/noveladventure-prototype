@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class PlayerControllerScript : MonoBehaviour
 {
+    Rigidbody2D rb; //Player's rigid body object
+
     /*Enum for allowing player to do certain actions
         
         CanDoAll = Player has complete control
@@ -22,7 +24,7 @@ public class PlayerControllerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        rb = gameObject.GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -45,8 +47,7 @@ public class PlayerControllerScript : MonoBehaviour
 
         if (currentInputState != InputState.CanNotMove) //if player can move
         {
-            transform.position += Vector3.right * Input.GetAxis("Horizontal") * movementSpeed * Time.deltaTime; //adds horizontal movement
-            transform.position += Vector3.up * Input.GetAxis("Vertical") * movementSpeed * Time.deltaTime; //adds vertical movement
+            rb.velocity = new Vector2(movementSpeed * Input.GetAxis("Horizontal"), movementSpeed * Input.GetAxis("Vertical")); //adds movement
         }
 
     }

@@ -7,7 +7,7 @@ public class PlayerControllerScript : MonoBehaviour
 {
     Rigidbody2D rb; //Player's rigid body object
 
-    /*Enum for allowing player to do certain actions
+    /*--------Enum for allowing player to do certain actions--------
         
         CanDoAll = Player has complete control
         CanNotJump = Player can move but cannot jump
@@ -18,8 +18,14 @@ public class PlayerControllerScript : MonoBehaviour
     public enum InputState { CanDoAll, CanNotJump, CanNotMove, CanDoNone };
     public InputState currentInputState;
 
-    //Movement Variable
+    //--------Movement Variables--------//
     public float movementSpeed; //movement speed
+
+    //--------Shooting Variables--------//
+    public GameObject BulletPrefab;
+    float cooldownCounter = 0;
+    bool coolingDown = false;
+
 
     // Start is called before the first frame update
     void Start()
@@ -30,14 +36,35 @@ public class PlayerControllerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if player can input to some capacity
+        // if player can input to some capacity
         if (currentInputState != InputState.CanDoNone)
         {
             Move();
+
+            if (!coolingDown)
+            {
+                if (Input.GetButtonDown("Fire1")) 
+                {
+                    Shoot();
+                    coolingDown = true;
+                    cooldownCounter = 0.1f; 
+                }
+            }
+
+            else
+            {
+                cooldownCounter -= Time.deltaTime;
+
+                if (cooldownCounter <= 0)
+                {
+                    coolingDown = false;
+                }
+            }
+
         }
     }
     
-    //Function for basic character movement
+    //--------Functions for basic character movement--------
     void Move()
     {
         if (Input.GetButtonDown("Jump")) //if jump buton pressed and can jump
@@ -57,12 +84,29 @@ public class PlayerControllerScript : MonoBehaviour
     {
         if (currentInputState != InputState.CanNotJump)
         {
-            Debug.Log("Player jumped");
+            //Debug.Log("Player jumped");
         }
 
         else
         {
-            Debug.Log("Player cannot jump");
+            //Debug.Log("Player cannot jump");
+        }
+    }
+
+    //--------Combat Functions--------
+    void Shoot()
+    {
+        if (Input.GetButtonDown("Fire1") && !coolingDown)
+        {
+            //Debug.Log("Shot fired");
+            Vector3 aimPos = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position; //gets mouse position in relation to player
+            aimPos.z = 0;
+            aimPos.Normalize();
+
+            GameObject bulletInstance = Instantiate(BulletPrefab, transform.position, Quaternion.Euler(new Vector3(0, 0, 0)));
+            bulletInstance.GetComponent<Rigidbody2D>().AddForce(aimPos * 1000);
+            Physics2D.IgnoreCollision(bulletInstance.GetComponent<Collider2D>(), GetComponent<Collider2D>());
+
         }
     }
 }

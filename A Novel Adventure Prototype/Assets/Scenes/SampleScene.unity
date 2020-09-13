@@ -266,6 +266,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentInputState: 0
   movementSpeed: 8
+  BulletPrefab: {fileID: 2893166586536613598, guid: 4197e812745b66341b555214faec7610, type: 3}
 --- !u!212 &403680996
 SpriteRenderer:
   m_ObjectHideFlags: 0

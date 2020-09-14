@@ -18,6 +18,8 @@ public class PlayerControllerScript : MonoBehaviour
 
     //--------Movement Variables--------//
     public float movementSpeed; //movement speed
+    public enum CharacterDirection { Up, UpRight, Right, DownRight, Down, DownLeft, Left, UpLeft, InPlace}; //directions character can face
+    CharacterDirection currentCharacterDirection; //player's current dcirection
 
     //--------Jumping Variables--------//
     float airTimeCounter = 0; //time in the air
@@ -34,6 +36,7 @@ public class PlayerControllerScript : MonoBehaviour
     void Start()
     {
         rb = gameObject.GetComponent<Rigidbody2D>();
+        currentCharacterDirection = CharacterDirection.Down;
     }
 
     // Update is called once per frame
@@ -91,7 +94,8 @@ public class PlayerControllerScript : MonoBehaviour
                 Jump();
                 hasJumped = true;
                 airTimeCounter = 0.77f;
-                inputAllows[3] = false;
+                SetJumpDirection(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+                inputAllows[3] = false; //prevent player from shooting in the air
             }
         }
 
@@ -102,11 +106,83 @@ public class PlayerControllerScript : MonoBehaviour
 
     }
 
+    //--------Function for setting character jump direction--------
+    void SetJumpDirection(float h, float v)
+    {
+        if (h > 0) //Character is moving to the right
+        {
+            if (v == 0)
+            {
+                currentCharacterDirection = CharacterDirection.Right;
+                Debug.Log("Player is jumping to the right");
+            }
+
+            else if (v > 0)
+            {
+                currentCharacterDirection = CharacterDirection.UpRight;
+                Debug.Log("Player is jumping to the upper right");
+            }
+
+            else if (v < 0)
+            {
+                currentCharacterDirection = CharacterDirection.DownRight;
+                Debug.Log("Player is jumping to the lower right");
+            }
+        }
+
+        else if (h < 0) //Character is moving to the left
+        {
+            if (v == 0)
+            {
+                currentCharacterDirection = CharacterDirection.Left;
+                Debug.Log("Player is jumping to the left");
+            }
+
+            else if (v > 0)
+            {
+                currentCharacterDirection = CharacterDirection.UpLeft;
+                Debug.Log("Player is jumping to the upper left");
+            }
+
+            else if (v < 0)
+            {
+                currentCharacterDirection = CharacterDirection.DownLeft;
+                Debug.Log("Player is jumping to the lower left");
+            }
+        }
+
+        else //Character isn't moving left or right
+        {
+            if (v == 0)
+            {
+                currentCharacterDirection = CharacterDirection.InPlace;
+                Debug.Log("Player is jumping in place");
+            }
+
+            else if (v > 0)
+            {
+                currentCharacterDirection = CharacterDirection.Up;
+                Debug.Log("Player is jumping forward");
+            }
+
+            else if (v < 0)
+            {
+                currentCharacterDirection = CharacterDirection.Down;
+                Debug.Log("Player is jumping backward");
+            }
+        }
+    }
+
     //Jumping Function
     void Jump()
     {
         grounded = false;
         Debug.Log("Player has jumped");
+    }
+
+    public bool IsGrounded()
+    {
+        return grounded;
     }
 
     //--------Combat Functions--------
@@ -121,4 +197,5 @@ public class PlayerControllerScript : MonoBehaviour
         bulletInstance.GetComponent<Rigidbody2D>().AddForce(aimPos * 1000);
         Physics2D.IgnoreCollision(bulletInstance.GetComponent<Collider2D>(), GetComponent<Collider2D>());
     }
+
 }

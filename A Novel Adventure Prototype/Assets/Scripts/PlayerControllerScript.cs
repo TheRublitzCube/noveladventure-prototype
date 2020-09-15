@@ -53,7 +53,7 @@ public class PlayerControllerScript : MonoBehaviour
                 {
                     Shoot();
                     coolingDown = true;
-                    cooldownCounter = 0.1f; 
+                    cooldownCounter = 0.15f; 
                 }
             }
 
@@ -194,7 +194,7 @@ public class PlayerControllerScript : MonoBehaviour
         aimPos.Normalize();
 
         GameObject bulletInstance = Instantiate(BulletPrefab, transform.position, Quaternion.Euler(new Vector3(0, 0, 0)));
-        bulletInstance.GetComponent<Rigidbody2D>().AddForce(aimPos * 1000);
+        bulletInstance.GetComponent<BulletScript>().SetSpeedAndVector(20f, aimPos);
         Physics2D.IgnoreCollision(bulletInstance.GetComponent<Collider2D>(), GetComponent<Collider2D>());
     }
 

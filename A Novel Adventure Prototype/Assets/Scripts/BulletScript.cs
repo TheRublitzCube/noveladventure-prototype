@@ -30,7 +30,10 @@ public class BulletScript : MonoBehaviour
             other.gameObject.GetComponent<EnemyBaseClass>().DealDamage(damage);
         }
 
-        Destroy(gameObject);
+        if (other.CompareTag("SightTrigger") != true)
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void OnBecameInvisible()

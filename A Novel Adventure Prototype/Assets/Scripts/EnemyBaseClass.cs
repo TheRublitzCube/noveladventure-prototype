@@ -43,7 +43,7 @@ public class EnemyBaseClass : MonoBehaviour
             knockedOut = true;
             rb.mass = 20;
             rb.drag = 3;
-            Debug.Log("Enemy is knocked out");
+            //Debug.Log("Enemy is knocked out");
         }
     }
 }
